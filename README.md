@@ -4,6 +4,28 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
+## Android: recommended run command
+
+Use this command for Android development:
+
+```sh
+npm run android
+```
+
+This project command starts Metro, waits until Metro is ready, uses your fast Android Studio emulator (`Pixel_4a_API_35_Fast` by default), connects it to Metro with `adb reverse tcp:8081 tcp:8081`, installs the debug app, and relaunches it cleanly. That prevents the red "Unable to load script" screen caused by opening the native app before it can reach Metro.
+
+If Metro cache gets stale, run:
+
+```sh
+npm run start:reset
+```
+
+If you already have Metro running and only need to repair the device connection, run:
+
+```sh
+npm run android:reverse
+```
+
 ## Step 1: Start Metro
 
 First, you will need to run **Metro**, the JavaScript build tool for React Native.
