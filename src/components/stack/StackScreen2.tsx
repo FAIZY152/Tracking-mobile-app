@@ -1,14 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function StackScreen2({ navigation }:any) {
+export default function StackScreen2({ navigation,route }:any) {
+const { user,message } = route.params || {};
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Stack Screen 2</Text>
       <Text style={styles.subtitle}>
         You’ve navigated deeper into the stack.
       </Text>
+ <Text style={styles.subtitle}>{message}</Text>
 
+      <Text style={styles.subtitle}>ID: {user.id}</Text>
+      <Text style={styles.subtitle}>Name: {user.name}</Text>
+      <Text style={styles.subtitle}>Role: {user.role}</Text>
+
+      
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.goBack()}

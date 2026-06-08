@@ -1,20 +1,39 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function StackScreen1({ navigation }:any) {
+export default function StackScreen1({ navigation,route }:any) {
+    const user = {
+    id: 1,
+    name: 'Muhammad Fayaz',
+    role: 'Full Stack Developer',
+  };
+
+  const { id } = route.params || {};
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Stack Screen 1</Text>
       <Text style={styles.subtitle}>
-        This is your entry screen. Clean, simple, functional.
+        your ID is: {id}
       </Text>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate('StackScreen2')}
       >
         <Text style={styles.buttonText}>Go to Screen 2</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+       <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          navigation.navigate('StackScreen2', {
+            user,
+            message: 'Hello from Screen 1',
+          })
+        }
+      > 
+        <Text style={styles.buttonText}>Go to Screen 2 with Data</Text>
+      </TouchableOpacity> 
     </View>
   );
 }
