@@ -62,7 +62,7 @@ export default function HomeScreen({navigation}:{navigation:any}) {
         numColumns={2}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.actionCard} >
+          <TouchableOpacity style={styles.actionCard} onPress={() => navigation.navigate('StackScreen1', {id:item.id})}>
             <Text style={styles.icon}>
               {item.icon}
             </Text>
@@ -88,7 +88,7 @@ export default function HomeScreen({navigation}:{navigation:any}) {
           </>
         }
       />
-      <Button title='Screen 1' onPress={() => navigation.navigate('StackScreen1')}/>
+      <Button title='Screen 1' onPress={() => navigation.navigate('StackNavigation')}/>
     </SafeAreaProvider>
   );
 }
