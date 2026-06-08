@@ -6,6 +6,7 @@ PORT="${RCT_METRO_PORT:-8081}"
 APP_ID="${ANDROID_APP_ID:-com.pro2}"
 METRO_LOG="$ROOT_DIR/.metro.log"
 METRO_PID_FILE="$ROOT_DIR/.metro.pid"
+METRO_RESET_CACHE="${METRO_RESET_CACHE:-1}"
 ADB="${ANDROID_ADB:-adb}"
 EMULATOR="${ANDROID_EMULATOR:-emulator}"
 AVD_NAME="${ANDROID_AVD_NAME:-Pixel_4a_API_35_Fast}"
@@ -69,6 +70,16 @@ NODE
 
 start_metro() {
   if metro_ready; then
+    if [ "$METRO_RESET_CACHE" = "1" ]; then
+      echo "Restarting Metro with a clean transform cache on port $PORT..."
+      stop_metro
+    else
+      echo "Metro is already running on port $PORT."
+      return
+    fi
+  fi
+
+  if metro_ready; then
     echo "Metro is already running on port $PORT."
     return
   fi
@@ -80,7 +91,7 @@ start_metro() {
   fi
 
   echo "Starting Metro on port $PORT..."
-  nohup npx react-native start --port "$PORT" >"$METRO_LOG" 2>&1 &
+  setsid npx react-native start --port "$PORT" --reset-cache >"$METRO_LOG" 2>&1 &
   echo "$!" >"$METRO_PID_FILE"
 
   for _ in $(seq 1 60); do
@@ -94,6 +105,30 @@ start_metro() {
   echo "Metro did not start within 60 seconds. Last log lines:"
   tail -40 "$METRO_LOG" || true
   exit 1
+}
+
+stop_metro() {
+  if [ ! -f "$METRO_PID_FILE" ]; then
+    return
+  fi
+
+  metro_pid="$(cat "$METRO_PID_FILE")"
+  if [ -z "$metro_pid" ] || ! kill -0 "$metro_pid" >/dev/null 2>&1; then
+    rm -f "$METRO_PID_FILE"
+    return
+  fi
+
+  kill -TERM -- "-$metro_pid" >/dev/null 2>&1 || kill "$metro_pid" >/dev/null 2>&1 || true
+  for _ in $(seq 1 20); do
+    if ! kill -0 "$metro_pid" >/dev/null 2>&1; then
+      rm -f "$METRO_PID_FILE"
+      return
+    fi
+    sleep 0.25
+  done
+
+  kill -KILL -- "-$metro_pid" >/dev/null 2>&1 || kill -9 "$metro_pid" >/dev/null 2>&1 || true
+  rm -f "$METRO_PID_FILE"
 }
 
 running_emulator_id() {
